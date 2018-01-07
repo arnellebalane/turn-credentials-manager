@@ -1,8 +1,11 @@
 const Sequelize = require('sequelize');
 const config = require('../config');
+const dbConfig = require('../config/database');
 
-const db = new Sequelize(config.get('DATABASE_URL'));
-const turndb = new Sequelize(config.get('TURN_DATABASE_URL'));
+const env = config.get('NODE_ENV');
+
+const db = new Sequelize(dbConfig[env]));
+const turndb = new Sequelize(dbConfig.turn);
 
 module.exports = db;
 exports.turndb = turndb;
