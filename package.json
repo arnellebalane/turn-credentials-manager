@@ -7,5 +7,13 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Arnelle Balane <arnellebalane@gmail.com> (https://arnellebalane.com/)",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "nconf": "0.10.0",
+    "pg": "7.4.1",
+    "sequelize": "4.29.0"
+  },
+  "devDependencies": {
+    "sequelize-cli": "3.2.0"
+  }
 }
