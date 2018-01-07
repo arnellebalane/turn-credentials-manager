@@ -14,7 +14,8 @@ const TurnUser = turndb.define('turn_user', {
     },
     hmackey: Sequelize.STRING(128)
 }, {
-    tableName: 'turnusers_lt'
+    tableName: 'turnusers_lt',
+    timestamps: false
 });
 
 module.exports = TurnUser;
