@@ -4,9 +4,9 @@ const dbConfig = require('../config/database');
 
 const env = config.get('NODE_ENV');
 
-const db = new Sequelize(dbConfig[env]));
+const db = new Sequelize(dbConfig[env]);
 const turndb = new Sequelize(dbConfig.turn);
 
-module.exports = db;
+module.export = db;
 exports.turndb = turndb;
 exports.Sequelize = Sequelize;
