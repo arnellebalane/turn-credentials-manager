@@ -1,7 +1,6 @@
-const database = require('../index');
-const Sequelize = database.Sequelize;
+const { Sequelize, turndb } = require('../index');
 
-const TurnUser = database.define('turn_user', {
+const TurnUser = turndb.define('turn_user', {
     realm: {
         type: Sequelize.STRING(127),
         primaryKey: true,
