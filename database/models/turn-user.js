@@ -16,3 +16,5 @@ const TurnUser = turndb.define('turn_user', {
 }, {
     tableName: 'turnusers_lt'
 });
+
+module.exports = TurnUser;
