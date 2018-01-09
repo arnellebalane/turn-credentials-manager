@@ -1,13 +1,32 @@
-const { readdirSync } = require('fs');
+const fs = require('fs');
+const path = require('path');
+const databases = require('../index');
 
-const modelsPath = __dirname;
-const models = readdirSync(modelsPath)
-    .filter(model => model.endsWith('.js') && model !== 'index.js')
-    .reduce((models, model) => {
-        const modelFilename = model.replace(/\.js$/, '');
-        const modelName = modelFilename.replace(/(^|\-)\w/g, match => match.replace('-', '').toUpperCase());
-        models[modelName] = require('./' + modelFilename);
+const baseName = path.basename(__filename);
+
+function isModelFile(itemPath, itemName) {
+    const stats = fs.lstatSync(path.join(itemPath, itemName));
+    return stats.isFile() && itemName !== baseName;
+}
+
+function isModelDirectory(itemPath, itemName) {
+    const stats = fs.lstatSync(path.join(itemPath, itemName));
+    return stats.isDirectory();
+}
+
+function importModelsInDirectory(directory, database) {
+    return fs.readdirSync(directory).reduce((models, item) => {
+        const itemBaseName = path.basename(item, '.js');
+        if (isModelFile(directory, item)) {
+            models[itemBaseName] = database.import(path.join(directory, item));
+        } else if (isModelDirectory(directory, item) && itemBaseName in databases) {
+            models = Object.assign(
+                models,
+                importModelsInDirectory(path.join(directory, item), databases[itemBaseName])
+            );
+        }
         return models;
     }, {});
+}
 
-module.exports = models;
+module.exports = importModelsInDirectory(__dirname, databases.defaultdb);

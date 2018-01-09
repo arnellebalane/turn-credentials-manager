@@ -8,9 +8,5 @@ module.exports = {
     production: {
         dialect: 'postgres',
         url: config.get('DATABASE_URL')
-    },
-    turn: {
-        dialect: 'postgres',
-        url: config.get('TURN_DATABASE_URL')
     }
 };
