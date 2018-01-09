@@ -1,17 +1,16 @@
 module.exports = (database, DataTypes) => {
-    return database.define('turn_user', {
+    return database.define('turn_secret', {
         realm: {
             type: DataTypes.STRING(127),
             primaryKey: true,
             defaultValue: ''
         },
-        user: {
-            type: DataTypes.STRING(512),
+        value: {
+            type: DataTypes.STRING(256),
             primaryKey: true
-        },
-        hmackey: DataTypes.STRING(128)
+        }
     }, {
-        tableName: 'turnusers_lt',
+        tableName: 'turn_secret',
         timestamps: false
     });
 };
