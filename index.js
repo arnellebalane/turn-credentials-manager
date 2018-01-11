@@ -1,4 +1,5 @@
 const server = require('server');
+const routers = require('auto-load')('routers');
 const config = require('./config');
 
 const options = {
@@ -8,5 +9,5 @@ const options = {
 
 server(
     options,
-    require('./routers/users')
+    routers.users
 ).then(ctx => ctx.log.info(`Server is running at localhost:${ctx.options.port}`));
