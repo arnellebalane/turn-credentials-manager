@@ -24,4 +24,11 @@ agenda.on('ready', () => {
     }
 });
 
+function shutdownGracefully() {
+    agenda.stop();
+}
+
+process.on('SIGTERM', shutdownGracefully);
+process.on('SIGINT', shutdownGracefully);
+
 module.exports = agenda;
