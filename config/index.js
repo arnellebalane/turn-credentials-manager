@@ -7,7 +7,8 @@ nconf
     .file('secrets', path.resolve(__dirname, 'secrets.json'))
     .defaults({
         PORT: 3000,
-        NODE_ENV: 'development'
+        NODE_ENV: 'development',
+        CREDENTIAL_VALIDITY: 30 * 60 // 30 minutes
     });
 
 module.exports = nconf;
