@@ -4,15 +4,25 @@ const { Op } = require('sequelize');
 const pick = require('lodash/pick');
 const addSeconds = require('date-fns/add_seconds');
 const crypto = require('crypto');
-const { Credential, User } = require('../database/models');
+const { Credential, User, TurnSecret, TurnUser } = require('../database/models');
 const config = require('../config');
+
+async function getTurnSecret(realm) {
+    const buffer = crypto.randomBytes(128);
+    const value = buffer.toString('hex');
+    const turnSecrets = await TurnSecret.findOrCreate({
+        where: { realm },
+        defaults: { value }
+    });
+    return turnSecrets[0];
+}
 
 async function createCredential(user, username, realm) {
     const validity = config.get('CREDENTIAL_VALIDITY');
-    const turnSecretKey = config.get('TURN_SECRET_KEY');
-    const hmac = crypto.createHmac('sha1', turnSecretKey);
+    const turnSecret = await getTurnSecret(realm);
+    const hmac = crypto.createHmac('sha1', turnSecret.value);
 
-    const expiresOn = addSeconds(Date.now(), validity)
+    const expiresOn = addSeconds(Date.now(), validity);
     const timestamp = Math.floor(expiresOn.getTime() / 1000);
     const tempUsername = timestamp + ':' + username;
     const password = hmac.update(tempUsername).digest('base64');
