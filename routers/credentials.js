@@ -53,7 +53,7 @@ module.exports = [
             }
         });
         if (credentials.length > 0) {
-            return json(formatCredential(credentials[0].get()));
+            return json(formatCredential(credentials[0]));
         }
         return json(formatCredential(await createCredential(user, username, realm)));
     })
