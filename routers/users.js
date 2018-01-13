@@ -1,6 +1,6 @@
 const pick = require('lodash/pick');
 const { post } = require('server/router');
-const { status, json } = require('server/reply');
+const { status } = require('server/reply');
 const { User } = require('../database/models');
 const Op = User.sequelize.Op;
 
@@ -18,6 +18,6 @@ module.exports = [
         if (user) return status(400);
 
         const result = await User.create(data);
-        return json(result.get());
+        return status(200);
     })
 ];
