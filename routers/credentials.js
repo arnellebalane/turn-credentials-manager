@@ -7,11 +7,11 @@ const { Credential, User, TurnSecret } = require('../database/models');
 const config = require('../config');
 
 async function findOrCreateTurnSecret(realm) {
+    const turnSecret = await TurnSecret.findOne({ where: { realm } });
+    if (turnSecret) return turnSecret;
+
     const buffer = crypto.randomBytes(128);
     const value = buffer.toString('hex');
-    const turnSecret = await TurnSecret.findOne({ where: { realm } });
-
-    if (turnSecret) return turnSecret;
     return TurnSecret.create({ realm, value });
 }
 
@@ -25,7 +25,7 @@ async function createCredential(user, username, realm) {
     const tempUsername = timestamp + ':' + username;
     const password = hmac.update(tempUsername).digest('base64');
 
-    return await Credential.create({
+    return Credential.create({
         userId: user.id,
         username: tempUsername,
         password: password,
