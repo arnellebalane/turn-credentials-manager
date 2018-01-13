@@ -5,7 +5,7 @@ module.exports = (database, DataTypes) => {
             primaryKey: true,
             autoIncrement: true
         },
-        user_id: {
+        userId: {
             type: DataTypes.INTEGER,
             references: {
                 model: 'users',
