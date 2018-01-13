@@ -1,6 +1,7 @@
 const server = require('server');
 const routers = require('auto-load')('routers');
 const config = require('./config');
+require('./config/agenda');
 
 const options = {
     port: config.get('PORT'),
