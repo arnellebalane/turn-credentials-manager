@@ -16,6 +16,12 @@ async function getTurnSecret(realm) {
     return TurnSecret.create({ realm, value });
 }
 
+async function findOrCreateTurnUser(name, realm) {
+    const turnUserData = { name, realm };
+    const turnUser = await TurnUser.findOne({ where: turnUserData });
+    return turnUser || TurnUser.create(turnUserData);
+}
+
 async function createCredential(user, username, realm) {
     const validity = config.get('CREDENTIAL_VALIDITY');
     const turnSecret = await getTurnSecret(realm);
@@ -64,6 +70,8 @@ module.exports = [
         if (credentials.length > 0) {
             return json(formatCredential(credentials[0]));
         }
-        return json(formatCredential(await createCredential(user, username, realm)));
+        const turnUser = await findOrCreateTurnUser(username, realm);
+        const credential = await createCredential(user, username, realm);
+        return json(formatCredential(credential));
     })
 ];
