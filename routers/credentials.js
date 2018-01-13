@@ -10,11 +10,10 @@ const config = require('../config');
 async function getTurnSecret(realm) {
     const buffer = crypto.randomBytes(128);
     const value = buffer.toString('hex');
-    const turnSecrets = await TurnSecret.findOrCreate({
-        where: { realm },
-        defaults: { value }
-    });
-    return turnSecrets[0];
+    const turnSecret = await TurnSecret.findOne({ where: { realm } });
+
+    if (turnSecret) return turnSecret;
+    return TurnSecret.create({ realm, value });
 }
 
 async function createCredential(user, username, realm) {
