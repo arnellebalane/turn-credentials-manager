@@ -1,10 +1,9 @@
 const { get } = require('server/router');
 const { status, json } = require('server/reply');
 const { Op } = require('sequelize');
-const pick = require('lodash/pick');
 const addSeconds = require('date-fns/add_seconds');
 const crypto = require('crypto');
-const { Credential, User, TurnSecret, TurnUser } = require('../database/models');
+const { Credential, User, TurnSecret } = require('../database/models');
 const config = require('../config');
 
 async function findOrCreateTurnSecret(realm) {
@@ -14,12 +13,6 @@ async function findOrCreateTurnSecret(realm) {
 
     if (turnSecret) return turnSecret;
     return TurnSecret.create({ realm, value });
-}
-
-async function findOrCreateTurnUser(name, realm) {
-    const turnUserData = { name, realm };
-    const turnUser = await TurnUser.findOne({ where: turnUserData });
-    return turnUser || TurnUser.create(turnUserData);
 }
 
 async function createCredential(user, username, realm) {
@@ -70,7 +63,6 @@ module.exports = [
         if (credentials.length > 0) {
             return json(formatCredential(credentials[0]));
         }
-        const turnUser = await findOrCreateTurnUser(username, realm);
         const credential = await createCredential(user, username, realm);
         return json(formatCredential(credential));
     })
