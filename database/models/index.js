@@ -29,4 +29,11 @@ function importModelsInDirectory(directory, database) {
     }, {});
 }
 
-module.exports = importModelsInDirectory(__dirname, databases.defaultdb);
+const models = importModelsInDirectory(__dirname, databases.defaultdb);
+
+// Set model associations. This would be better if defined in the
+// model definitions directly.
+models.User.hasMany(models.Credential);
+models.Credential.belongsTo(models.User);
+
+module.exports = models;
