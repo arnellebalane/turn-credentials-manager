@@ -36,4 +36,7 @@ const models = importModelsInDirectory(__dirname, databases.defaultdb);
 models.User.hasMany(models.Credential);
 models.Credential.belongsTo(models.User);
 
+// Load Sequelize model hooks.
+require('../hooks')(models);
+
 module.exports = models;
