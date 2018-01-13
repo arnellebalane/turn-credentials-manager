@@ -25,7 +25,7 @@ agenda.on('ready', () => {
 });
 
 function shutdownGracefully() {
-    agenda.stop();
+    agenda.stop(() => process.exit(0));
 }
 
 process.on('SIGTERM', shutdownGracefully);
