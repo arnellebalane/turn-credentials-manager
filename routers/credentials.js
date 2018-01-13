@@ -7,7 +7,7 @@ const crypto = require('crypto');
 const { Credential, User, TurnSecret, TurnUser } = require('../database/models');
 const config = require('../config');
 
-async function getTurnSecret(realm) {
+async function findOrCreateTurnSecret(realm) {
     const buffer = crypto.randomBytes(128);
     const value = buffer.toString('hex');
     const turnSecret = await TurnSecret.findOne({ where: { realm } });
@@ -24,7 +24,7 @@ async function findOrCreateTurnUser(name, realm) {
 
 async function createCredential(user, username, realm) {
     const validity = config.get('CREDENTIAL_VALIDITY');
-    const turnSecret = await getTurnSecret(realm);
+    const turnSecret = await findOrCreateTurnSecret(realm);
     const hmac = crypto.createHmac('sha1', turnSecret.value);
 
     const expiresOn = addSeconds(Date.now(), validity);
