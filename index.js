@@ -9,5 +9,6 @@ const options = {
 
 server(
     options,
-    routers.users
+    routers.users,
+    routers.credentials
 ).then(ctx => ctx.log.info(`Server is running at localhost:${ctx.options.port}`));
