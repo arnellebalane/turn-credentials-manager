@@ -1,4 +1,4 @@
-const { post } = require('server/router');
+const { post, del } = require('server/router');
 const { status } = require('server/reply');
 const { User, Origin } = require('../database/models');
 
@@ -21,5 +21,24 @@ module.exports = [
 
         const [instance, created] = await findOrCreateOrigin(user, origin);
         return created ? status(201) : status(200);
+    }),
+
+    del('/origins', async ctx => {
+        const { email, origin } = ctx.data;
+        const instance = await Origin.findOne({
+            where: {
+                value: origin,
+            },
+            include: [ {
+                model: User,
+                where: { email, email }
+            } ]
+        });
+
+        if (instance) {
+            await instance.destroy();
+            return status(200);
+        }
+        return status(403);
     })
 ];
