@@ -52,6 +52,10 @@ module.exports = [
         const user = await User.findOne({ where: { username } });
         if (!user) return status(403);
 
+        const { referer } = ctx.headers;
+        const origins = user.getOrigins({ where: { value: referer } });
+        if (!origins.length) return status(403);
+
         const credentials = await user.getCredentials({
             where: {
                 realm: realm,
