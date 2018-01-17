@@ -16,10 +16,10 @@ async function findOrCreateOrigin(user, value) {
 
 module.exports = [
     post('/origins', async ctx => {
-        const { email } = ctx.data;
+        const { username } = ctx.data;
         const origin = new URL(ctx.data.origin).host;
 
-        const user = await User.findOne({ where: { email } });
+        const user = await User.findOne({ where: { username } });
         if (!user) return status(403);
 
         const [instance, created] = await findOrCreateOrigin(user, origin);
@@ -27,7 +27,7 @@ module.exports = [
     }),
 
     del('/origins', async ctx => {
-        const { email } = ctx.data;
+        const { username } = ctx.data;
         const origin = new URL(ctx.data.origin).host;
 
         const instance = await Origin.findOne({
@@ -36,7 +36,7 @@ module.exports = [
             },
             include: [ {
                 model: User,
-                where: { email, email }
+                where: { username }
             } ]
         });
 
