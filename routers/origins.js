@@ -1,3 +1,4 @@
+const { URL } = require('url');
 const { post, del } = require('server/router');
 const { status } = require('server/reply');
 const { User, Origin } = require('../database/models');
@@ -15,7 +16,9 @@ async function findOrCreateOrigin(user, value) {
 
 module.exports = [
     post('/origins', async ctx => {
-        const { email, origin } = ctx.data;
+        const { email } = ctx.data;
+        const origin = new URL(ctx.data.origin).host;
+
         const user = await User.findOne({ where: { email } });
         if (!user) return status(403);
 
@@ -24,7 +27,9 @@ module.exports = [
     }),
 
     del('/origins', async ctx => {
-        const { email, origin } = ctx.data;
+        const { email } = ctx.data;
+        const origin = new URL(ctx.data.origin).host;
+
         const instance = await Origin.findOne({
             where: {
                 value: origin,

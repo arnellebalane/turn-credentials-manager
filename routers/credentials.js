@@ -1,3 +1,4 @@
+const { URL } = require('url');
 const { get } = require('server/router');
 const { status, json } = require('server/reply');
 const { Op } = require('sequelize');
@@ -52,8 +53,8 @@ module.exports = [
         const user = await User.findOne({ where: { username } });
         if (!user) return status(403);
 
-        const { referer } = ctx.headers;
-        const origins = user.getOrigins({ where: { value: referer } });
+        const referer = new URL(ctx.headers.referer).host;
+        const origins = await user.getOrigins({ where: { value: referer } });
         if (!origins.length) return status(403);
 
         const credentials = await user.getCredentials({
