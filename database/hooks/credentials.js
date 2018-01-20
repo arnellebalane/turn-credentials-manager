@@ -1,11 +1,12 @@
 const { Op } = require('sequelize');
+const config = require('../../config');
 
 function createTurnUser({ Credential, TurnUser }) {
     Credential.afterCreate('createTurnUser', async (credential, options) => {
         const user = await credential.getUser();
         const turnUserData = {
             name: user.username,
-            realm: credential.realm
+            realm: config.get('TURN_DEFAULT_REALM')
         };
         const turnUser = await TurnUser.findOne({ where: turnUserData });
         if (!turnUser) {
@@ -31,7 +32,7 @@ function deleteTurnUserAndTurnSecret({ Credential, TurnUser, TurnSecret }) {
                 where: { name: user.username }
             }),
             TurnSecret.destroy({
-                where: { realm: credential.realm }
+                where: { realm: credential.origin }
             })
         ]);
     });
