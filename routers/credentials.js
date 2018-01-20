@@ -37,12 +37,15 @@ async function createCredential(user, username, origin) {
 }
 
 function formatCredential(credential) {
+    const realm = config.get('TURN_DEFAULT_REALM');
+
     return {
         username: credential.username,
         password: credential.password,
         ttl: credential.validity,
         uris: [
-            'turns:peanut.arnelle.me'
+            `turn:${realm}`,
+            `turns:${realm}`
         ]
     };
 }
