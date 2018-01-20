@@ -7,18 +7,17 @@ const crypto = require('crypto');
 const { Credential, User, TurnSecret } = require('../database/models');
 const config = require('../config');
 
-async function findOrCreateTurnSecret(realm) {
-    const turnSecret = await TurnSecret.findOne({ where: { realm } });
-    if (turnSecret) return turnSecret;
-
+async function createTurnSecret() {
     const buffer = crypto.randomBytes(128);
-    const value = buffer.toString('hex');
-    return TurnSecret.create({ realm, value });
+    return TurnSecret.create({
+        realm: config.get('TURN_DEFAULT_REALM')
+        value: buffer.toString('hex')
+    });
 }
 
 async function createCredential(user, username, origin) {
     const validity = config.get('CREDENTIAL_VALIDITY');
-    const turnSecret = await findOrCreateTurnSecret(origin);
+    const turnSecret = await createTurnSecret(origin);
     const hmac = crypto.createHmac('sha1', turnSecret.value);
 
     const expiresOn = addSeconds(Date.now(), validity);
@@ -32,7 +31,8 @@ async function createCredential(user, username, origin) {
         password: password,
         origin: origin,
         validity: validity,
-        expiresOn: expiresOn
+        expiresOn: expiresOn,
+        secret: turnSecret.value
     });
 }
 

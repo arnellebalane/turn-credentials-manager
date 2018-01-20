@@ -32,7 +32,7 @@ function deleteTurnUserAndTurnSecret({ Credential, TurnUser, TurnSecret }) {
                 where: { name: user.username }
             }),
             TurnSecret.destroy({
-                where: { realm: credential.origin }
+                where: { value: credential.secret }
             })
         ]);
     });
