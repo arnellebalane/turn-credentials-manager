@@ -10,7 +10,7 @@ const config = require('../config');
 async function createTurnSecret() {
     const buffer = crypto.randomBytes(128);
     return TurnSecret.create({
-        realm: config.get('TURN_DEFAULT_REALM')
+        realm: config.get('TURN_DEFAULT_REALM'),
         value: buffer.toString('hex')
     });
 }
