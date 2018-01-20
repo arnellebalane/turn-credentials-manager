@@ -33,6 +33,7 @@ module.exports = (database, DataTypes) => {
         expiresOn: {
             type: DataTypes.DATE,
             allowNull: false
-        }
+        },
+        secret: DataTypes.STRING(256)
     });
 };
