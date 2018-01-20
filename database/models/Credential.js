@@ -22,7 +22,7 @@ module.exports = (database, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false
         },
-        realm: {
+        origin: {
             type: DataTypes.STRING,
             allowNull: false
         },
