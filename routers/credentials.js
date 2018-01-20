@@ -16,9 +16,9 @@ async function findOrCreateTurnSecret(realm) {
     return TurnSecret.create({ realm, value });
 }
 
-async function createCredential(user, username, realm) {
+async function createCredential(user, username, origin) {
     const validity = config.get('CREDENTIAL_VALIDITY');
-    const turnSecret = await findOrCreateTurnSecret(realm);
+    const turnSecret = await findOrCreateTurnSecret(origin);
     const hmac = crypto.createHmac('sha1', turnSecret.value);
 
     const expiresOn = addSeconds(Date.now(), validity);
@@ -30,7 +30,7 @@ async function createCredential(user, username, realm) {
         userId: user.id,
         username: tempUsername,
         password: password,
-        realm: realm,
+        origin: origin,
         validity: validity,
         expiresOn: expiresOn
     });
@@ -49,17 +49,17 @@ function formatCredential(credential) {
 
 module.exports = [
     get('/credentials', async ctx => {
-        const { username, realm } = ctx.data;
+        const { username } = ctx.data;
         const user = await User.findOne({ where: { username } });
         if (!user) return status(403);
 
-        const referer = new URL(ctx.headers.referer).host;
-        const origins = await user.getOrigins({ where: { value: referer } });
+        const origin = new URL(ctx.headers.referer).host;
+        const origins = await user.getOrigins({ where: { value: origin } });
         if (!origins.length) return status(403);
 
         const credentials = await user.getCredentials({
             where: {
-                realm: realm,
+                origin: origin,
                 expiresOn: {
                     [Op.gt]: Date.now()
                 }
@@ -68,7 +68,7 @@ module.exports = [
         if (credentials.length > 0) {
             return json(formatCredential(credentials[0]));
         }
-        const credential = await createCredential(user, username, realm);
+        const credential = await createCredential(user, username, origin);
         return json(formatCredential(credential));
     })
 ];
