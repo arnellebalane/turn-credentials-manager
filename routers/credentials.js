@@ -39,10 +39,13 @@ async function createCredential(user, username, origin) {
 function formatCredential(credential) {
     const realm = config.get('TURN_DEFAULT_REALM');
 
+    const now = Date.now();
+    const ttl = Math.floor((credential.expiresOn.valueOf() - now.valueOf()) / 1000);
+
     return {
         username: credential.username,
         password: credential.password,
-        ttl: credential.validity,
+        ttl: ttl,
         uris: [
             `turn:${realm}`,
             `turns:${realm}`
