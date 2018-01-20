@@ -56,6 +56,7 @@ module.exports = [
         const user = await User.findOne({ where: { username } });
         if (!user) return status(403);
 
+        if (!ctx.headers.referer) return status(403);
         const origin = new URL(ctx.headers.referer).host;
         const origins = await user.getOrigins({ where: { value: origin } });
         if (!origins.length) return status(403);
