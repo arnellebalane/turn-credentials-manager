@@ -55,7 +55,7 @@ function formatCredential(credential) {
 
 module.exports = [
     get('/credentials', async ctx => {
-        const { username } = ctx.data;
+        const { username } = ctx.query;
         const user = await User.findOne({ where: { username } });
         if (!user) return status(403);
 
